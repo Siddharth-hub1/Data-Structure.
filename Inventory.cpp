@@ -4,43 +4,42 @@
 
 using namespace std;
 
-struct Student
+struct Product
 {
-    int rollNo;
+    int id;
     string name;
-    int age;
-    string course;
+    float price;
 
-    Student* next;       
-    Student* hashNext;   
+    Product* next;       
+    Product* hashNext;   
 };
 
-Student* head = NULL;
+Product* head = NULL;
 
 const int SIZE = 10;
-Student* hashTable[SIZE] = {NULL};
+Product* hashTable[SIZE] = {NULL};
 
-int hashFunction(int rollNo)
+int hashFunction(int id)
 {
-    return rollNo % SIZE;
+    return id % SIZE;
 }
 
-void addRegistration()
+void addProduct()
 {
-    Student* s = new Student;
+    Product* p = new Product;
 
-    cout << "Enter Roll Number: ";
-    cin >> s->rollNo;
+    cout << "Enter Product ID: ";
+    cin >> p->id;
 
-    int index = hashFunction(s->rollNo);
-    Student* temp = hashTable[index];
+    int index = hashFunction(p->id);
+    Product* temp = hashTable[index];
 
     while (temp != NULL)
     {
-        if (temp->rollNo == s->rollNo)
+        if (temp->id == p->id)
         {
-            cout << "Roll Number already exists!\n";
-            delete s;
+            cout << "Product ID already exists!\n";
+            delete p;
             return;
         }
 
@@ -49,130 +48,83 @@ void addRegistration()
 
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    cout << "Enter Student Name: ";
-    getline(cin, s->name);
+    cout << "Enter Product Name: ";
+    getline(cin, p->name);
 
-    cout << "Enter Age: ";
-    cin >> s->age;
+    cout << "Enter Product Price: ";
+    cin >> p->price;
 
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    cout << "Enter Course Name: ";
-    getline(cin, s->course);
-
-    s->next = NULL;
+    p->next = NULL;
 
     if (head == NULL)
     {
-        head = s;
+        head = p;
     }
     else
     {
-        Student* temp = head;
+        Product* temp = head;
 
         while (temp->next != NULL)
         {
             temp = temp->next;
         }
 
-        temp->next = s;
+        temp->next = p;
     }
 
-    s->hashNext = hashTable[index];
-    hashTable[index] = s;
+    p->hashNext = hashTable[index];
+    hashTable[index] = p;
 
-    cout << "Student Registered Successfully!\n";
+    cout << "Product Added Successfully!\n";
 }
 
-void updateStudent()
+void updatePrice()
 {
-    int rollNo;
+    int id;
 
-    cout << "Enter Roll Number to update: ";
-    cin >> rollNo;
+    cout << "Enter Product ID to update price: ";
+    cin >> id;
 
-    int index = hashFunction(rollNo);
+    int index = hashFunction(id);
 
-    Student* temp = hashTable[index];
+    Product* temp = hashTable[index];
 
     while (temp != NULL)
     {
-        if (temp->rollNo == rollNo)
+        if (temp->id == id)
         {
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Current Price: " << temp->price << endl;
 
-            cout << "Enter New Student Name: ";
-            getline(cin, temp->name);
+            cout << "Enter New Price: ";
+            cin >> temp->price;
 
-            cout << "Enter New Age: ";
-            cin >> temp->age;
-
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-            cout << "Enter New Course Name: ";
-            getline(cin, temp->course);
-
-            cout << "Student Information Updated Successfully!\n";
+            cout << "Product Price Updated Successfully!\n";
             return;
         }
 
         temp = temp->hashNext;
     }
 
-    cout << "Student not found!\n";
+    cout << "Product not found!\n";
 }
 
-void withdrawStudent()
+void displayProducts()
 {
-    int rollNo;
-
-    cout << "Enter Roll Number to withdraw: ";
-    cin >> rollNo;
-
-    int index = hashFunction(rollNo);
-
-    Student* temp = hashTable[index];
-
-    while (temp != NULL)
-    {
-        if (temp->rollNo == rollNo)
-        {
-            if (temp->course == "Not Enrolled")
-            {
-                cout << "Student is not enrolled in any course!\n";
-                return;
-            }
-
-            temp->course = "Not Enrolled";
-
-            cout << "Student Withdrawn from Course Successfully!\n";
-            return;
-        }
-
-        temp = temp->hashNext;
-    }
-
-    cout << "Student not found!\n";
-}
-
-void displayStudents()
-{
-    Student* temp = head;
+    Product* temp = head;
 
     if (temp == NULL)
     {
-        cout << "No Student Records Available.\n";
+        cout << "No Products Available.\n";
         return;
     }
 
-    cout << "\n--- All Student Records ---\n";
+    cout << "\n--- All Available Products ---\n";
 
     while (temp != NULL)
     {
-        cout << "\nRoll Number: " << temp->rollNo << endl;
-        cout << "Student Name: " << temp->name << endl;
-        cout << "Age: " << temp->age << endl;
-        cout << "Course: " << temp->course << endl;
+        cout << "\nProduct ID: " << temp->id << endl;
+        cout << "Product Name: " << temp->name << endl;
+        cout << "Product Price: " << temp->price << endl;
 
         temp = temp->next;
     }
@@ -184,13 +136,12 @@ int main()
 
     do
     {
-        cout << "\n--- University Student Registration System ---\n";
+        cout << "\n--- E-Commerce Product Catalog System ---\n";
 
-        cout << "1. Add Student Registration\n";
-        cout << "2. Withdraw Student from Course\n";
-        cout << "3. Display All Students\n";
-        cout << "4. Update Student Information\n";
-        cout << "5. Exit\n";
+        cout << "1. Add New Product\n";
+        cout << "2. Update Product Price\n";
+        cout << "3. Display All Products\n";
+        cout << "4. Exit\n";
 
         cout << "Enter your choice: ";
         cin >> choice;
@@ -198,22 +149,18 @@ int main()
         switch (choice)
         {
             case 1:
-                addRegistration();
+                addProduct();
                 break;
 
             case 2:
-                withdrawStudent();
+                updatePrice();
                 break;
 
             case 3:
-                displayStudents();
+                displayProducts();
                 break;
 
             case 4:
-                updateStudent();
-                break;
-
-            case 5:
                 cout << "Exiting Program...\n";
                 break;
 
@@ -221,7 +168,7 @@ int main()
                 cout << "Invalid Choice!\n";
         }
 
-    } while (choice != 5);
+    } while (choice != 4);
 
     return 0;
 }
